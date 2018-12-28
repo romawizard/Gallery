@@ -62,7 +62,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
 
             Picasso.get()
                     .load(new File(photo.getPath()))
-                    .resize(500,0)
+                    .resize(500,500)
                     .centerCrop()
                     .placeholder(R.drawable.placeholder)
                     .into(imageView);
