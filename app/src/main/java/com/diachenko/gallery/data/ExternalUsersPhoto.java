@@ -37,8 +37,6 @@ public class ExternalUsersPhoto {
         Cursor cursor = context.getContentResolver().query(images, projection, null,
                 null, null);
 
-        MyLog.log(TAG,"row count = " + cursor.getCount());
-
         columnIndexData = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         columnIndexFolderName = cursor.
                 getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);

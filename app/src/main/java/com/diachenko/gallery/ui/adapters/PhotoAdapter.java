@@ -58,8 +58,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
         }
 
         public void bind(Photo photo) {
-            MyLog.log(TAG,"photo path = " + photo.getPath());
-
             Picasso.get()
                     .load(new File(photo.getPath()))
                     .resize(500,500)
