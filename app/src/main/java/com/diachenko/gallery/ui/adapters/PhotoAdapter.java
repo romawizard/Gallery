@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.diachenko.gallery.R;
@@ -19,7 +21,7 @@ import java.util.List;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder> {
 
     public static final String TAG = PhotoAdapter.class.getSimpleName();
-
+    public PhotoAdapterListener listener;
     private List<Photo> photos;
 
     @NonNull
@@ -34,7 +36,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
 
     @Override
     public void onBindViewHolder(@NonNull PhotoHolder photoHolder, int i) {
-        photoHolder.bind(photos.get(i));
+        photoHolder.bind(photos.get(i),i);
     }
 
     @Override
@@ -48,22 +50,60 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
         notifyDataSetChanged();
     }
 
-    public class PhotoHolder extends RecyclerView.ViewHolder{
+    public void setListener(PhotoAdapterListener listener) {
+        this.listener = listener;
+    }
 
-        ImageView imageView;
+    public void stopAnimate(int position) {
+        photos.get(position).setLoading(false);
+        notifyDataSetChanged();
+    }
+
+    public interface PhotoAdapterListener{
+        void onClick(Photo photo, int position);
+     }
+
+    public class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private ImageView imageView;
+        private ImageView loadingImage;
+        private Photo photo;
+        private int position;
 
         public PhotoHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             imageView = itemView.findViewById(R.id.image);
+            loadingImage = itemView.findViewById(R.id.loading_image);
         }
 
-        public void bind(Photo photo) {
+        public void bind(Photo photo, int position) {
+            this.photo = photo;
+            this.position = position;
             Picasso.get()
                     .load(new File(photo.getPath()))
                     .resize(500,500)
                     .centerCrop()
                     .placeholder(R.drawable.placeholder)
                     .into(imageView);
+            if (photo.isLoading()){
+                loadingImage.setVisibility(View.VISIBLE);
+                Animation rotation = AnimationUtils.loadAnimation(imageView.getContext(),
+                        R.anim.progress_animation);
+                loadingImage.startAnimation(rotation);
+            }
+            else{
+                loadingImage.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (listener != null){
+                listener.onClick(photo,position);
+            }
+            photo.setLoading(true);
+            notifyDataSetChanged();
         }
     }
 }
