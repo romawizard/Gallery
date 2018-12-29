@@ -36,7 +36,6 @@ import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements PhotoAdapter.PhotoAdapterListener {
 
@@ -136,14 +135,16 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
                 }
                switch (uploadPhotoResponseResource.status){
                    case LOADING:
+                       adapter.startLoadingAnimation(position);
                        MyLog.log(TAG,uploadPhotoResponseResource.toString());
                        break;
                    case ERROR:
+                       adapter.showFailLoading(position);
                        MyLog.log(TAG,uploadPhotoResponseResource.toString());
                        break;
                    case SUCCESS:
                        MyLog.log(TAG,uploadPhotoResponseResource.toString());
-                       adapter.stopAnimate(position);
+                       adapter.stopLoadingAnimation(position);
                        break;
                }
             }

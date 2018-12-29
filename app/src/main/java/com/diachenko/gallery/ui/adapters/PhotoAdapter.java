@@ -54,9 +54,23 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
         this.listener = listener;
     }
 
-    public void stopAnimate(int position) {
+    public void stopLoadingAnimation(int position) {
         photos.get(position).setLoading(false);
-        notifyDataSetChanged();
+        notifyItemChanged(position);
+    }
+
+    public void startLoadingAnimation(int position) {
+        Photo p = photos.get(position);
+        p.setFail(false);
+        p.setLoading(true);
+        notifyItemChanged(position);
+    }
+
+    public void showFailLoading(int position) {
+        Photo p = photos.get(position);
+        p.setFail(true);
+        p.setLoading(false);
+        notifyItemChanged(position);
     }
 
     public interface PhotoAdapterListener{
@@ -67,6 +81,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
 
         private ImageView imageView;
         private ImageView loadingImage;
+        private ImageView errorImage;
         private Photo photo;
         private int position;
 
@@ -75,17 +90,18 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
             itemView.setOnClickListener(this);
             imageView = itemView.findViewById(R.id.image);
             loadingImage = itemView.findViewById(R.id.loading_image);
+            errorImage = itemView.findViewById(R.id.error_image);
         }
 
         public void bind(Photo photo, int position) {
             this.photo = photo;
             this.position = position;
-            Picasso.get()
-                    .load(new File(photo.getPath()))
-                    .resize(500,500)
-                    .centerCrop()
-                    .placeholder(R.drawable.placeholder)
-                    .into(imageView);
+            showPhoto(photo);
+            showLoadingStatus(photo);
+
+        }
+
+        private void showLoadingStatus(Photo photo) {
             if (photo.isLoading()){
                 loadingImage.setVisibility(View.VISIBLE);
                 Animation rotation = AnimationUtils.loadAnimation(imageView.getContext(),
@@ -95,15 +111,28 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
             else{
                 loadingImage.setVisibility(View.GONE);
             }
+
+            if (photo.isFail()){
+                errorImage.setVisibility(View.VISIBLE);
+            }else {
+                errorImage.setVisibility(View.GONE);
+            }
+        }
+
+        private void showPhoto(Photo photo) {
+            Picasso.get()
+                    .load(new File(photo.getPath()))
+                    .resize(500,500)
+                    .centerCrop()
+                    .placeholder(R.drawable.placeholder)
+                    .into(imageView);
         }
 
         @Override
         public void onClick(View v) {
-            if (listener != null){
+            if (listener != null && !photo.isLoading()){
                 listener.onClick(photo,position);
             }
-            photo.setLoading(true);
-            notifyDataSetChanged();
         }
     }
 }

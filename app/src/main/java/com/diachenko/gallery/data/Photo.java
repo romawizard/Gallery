@@ -8,6 +8,7 @@ public class Photo {
     private String path;
     private String fileName;
     private boolean isLoading = false;
+    private boolean isFail = false;
 
     public Photo(String folderName, String path, String fileName) {
         this.folderName = folderName;
@@ -35,6 +36,14 @@ public class Photo {
         isLoading = loading;
     }
 
+    public boolean isFail() {
+        return isFail;
+    }
+
+    public void setFail(boolean fail) {
+        isFail = fail;
+    }
+
     @Override
     public String toString() {
         return "Photo{" +
@@ -57,4 +66,5 @@ public class Photo {
 
         return Objects.hash(folderName, path);
     }
+
 }
