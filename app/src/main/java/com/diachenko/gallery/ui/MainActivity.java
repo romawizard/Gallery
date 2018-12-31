@@ -15,64 +15,47 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.diachenko.gallery.GalleryApplication;
 import com.diachenko.gallery.R;
-import com.diachenko.gallery.data.ExternalUsersPhoto;
 import com.diachenko.gallery.data.Photo;
 import com.diachenko.gallery.data.PhotoRepository;
-import com.diachenko.gallery.data.PhotoRepositoryImpl;
-import com.diachenko.gallery.data.api.ImgurApi;
-import com.diachenko.gallery.data.api.response.UploadPhotoResponse;
 import com.diachenko.gallery.ui.adapters.PhotoAdapter;
+import com.diachenko.gallery.ui.dialogs.ListUrlDialog;
 import com.diachenko.gallery.ui.viewmodels.PhotoViewModel;
-import com.diachenko.gallery.utils.MyLog;
-import com.diachenko.gallery.utils.Resource;
+import com.diachenko.gallery.ui.viewmodels.PhotoViewModelFactory;
 
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements PhotoAdapter.PhotoAdapterListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName() ;
     public static final int PORTRAIT_SPAN_COUNT = 3;
     public static final int LANDSCAPE_SPAN_COUNT = 5;
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSION_CODE = 101;
+    private static final String DIALOG_TAG = "ListUrlDialog";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.photoGrid)
     RecyclerView photoGrid;
+    @BindView(R.id.loading_photos)
+    ImageView loadingPhotos;
     private PhotoViewModel photoViewModel;
     private PhotoAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-       getPermission();
-    }
-
-    private void preparePhotoGrid(int spanCount) {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, spanCount);
-        layoutManager.setOrientation(GridLayoutManager.VERTICAL);
-
-        adapter = new PhotoAdapter();
-        adapter.setListener(this);
-        photoGrid.setLayoutManager(layoutManager);
-        photoGrid.setAdapter(adapter);
-        photoViewModel.getPhoto(this).observe(this, new Observer<List<Photo>>() {
-            @Override
-            public void onChanged(@Nullable List<Photo> photos) {
-                adapter.setPhotos(photos);
-            }
-        });
+    public void onClick(final Photo photo, final int position) {
+        photoViewModel.uploadPhoto(photo, position);
 
     }
 
@@ -91,13 +74,66 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.option_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.links:
+                ListUrlDialog dialog = new ListUrlDialog();
+                dialog.show(getSupportFragmentManager(), DIALOG_TAG);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getPermission();
+    }
+
+    private void preparePhotoGrid(int spanCount) {
+        GridLayoutManager layoutManager = new GridLayoutManager(this, spanCount);
+        layoutManager.setOrientation(GridLayoutManager.VERTICAL);
+
+        adapter = new PhotoAdapter();
+        adapter.setListener(this);
+        photoGrid.setLayoutManager(layoutManager);
+        photoGrid.setAdapter(adapter);
+        photoViewModel.getPhotos(this).observe(this, new Observer<List<Photo>>() {
+            @Override
+            public void onChanged(@Nullable List<Photo> photos) {
+                stopLoading();
+                adapter.setPhotos(photos);
+
+//                DiffUtilPhoto diffUtilPhoto = new DiffUtilPhoto(adapter.getPhotos(),photos);
+//                DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffUtilPhoto);
+//                adapter.setPhotos(photos);
+//                result.dispatchUpdatesTo(adapter);
+            }
+        });
+
+    }
+
+    private void stopLoading() {
+        loadingPhotos.clearAnimation();
+        loadingPhotos.setVisibility(View.GONE);
+    }
+
     private void showPhotos() {
+        showLoading();
         // get and init ViewModel
-        photoViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
-        ImgurApi imgurApi = GalleryApplication.getInstance().getImgurApi();
-        Executor executor = Executors.newSingleThreadExecutor();
-        PhotoRepository photoRepository = new PhotoRepositoryImpl(new ExternalUsersPhoto(),imgurApi,executor);
-        photoViewModel.init(photoRepository);
+        PhotoRepository repository = GalleryApplication.getInstance().getRepository();
+        photoViewModel = ViewModelProviders.of(this, new PhotoViewModelFactory(repository))
+                .get(PhotoViewModel.class);
 
         // Check Orientation
         int orientation = getResources().getConfiguration().orientation;
@@ -106,6 +142,14 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
         } else {
             preparePhotoGrid(PORTRAIT_SPAN_COUNT);
         }
+    }
+
+    private void showLoading() {
+        loadingPhotos.setVisibility(View.VISIBLE);
+        loadingPhotos.setVisibility(View.VISIBLE);
+        Animation rotation = AnimationUtils.loadAnimation(this,
+                R.anim.progress_animation);
+        loadingPhotos.startAnimation(rotation);
     }
 
     private void getPermission() {
@@ -120,34 +164,8 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}
                         , REQUEST_PERMISSION_CODE);
             }
-        }else {
+        } else {
             showPhotos();
         }
-    }
-
-    @Override
-    public void onClick(final Photo photo, final int position) {
-        photoViewModel.uploadPhoto(photo).observe(this, new Observer<Resource<UploadPhotoResponse>>() {
-            @Override
-            public void onChanged(@Nullable Resource<UploadPhotoResponse> uploadPhotoResponseResource) {
-                if (uploadPhotoResponseResource == null){
-                    return;
-                }
-               switch (uploadPhotoResponseResource.status){
-                   case LOADING:
-                       adapter.startLoadingAnimation(position);
-                       MyLog.log(TAG,uploadPhotoResponseResource.toString());
-                       break;
-                   case ERROR:
-                       adapter.showFailLoading(position);
-                       MyLog.log(TAG,uploadPhotoResponseResource.toString());
-                       break;
-                   case SUCCESS:
-                       MyLog.log(TAG,uploadPhotoResponseResource.toString());
-                       adapter.stopLoadingAnimation(position);
-                       break;
-               }
-            }
-        });
     }
 }

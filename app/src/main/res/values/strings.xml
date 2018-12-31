@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Gallery</string>
     <string name="base_url">https://api.imgur.com</string>
+    <string name="database">GalleryDatabase</string>
+    <string name="links">Links</string>
+    <string name="uploaded_image">Uploaded image</string>
+    <string name="item_number">№</string>
+    <string name="time">Time</string>
 </resources>

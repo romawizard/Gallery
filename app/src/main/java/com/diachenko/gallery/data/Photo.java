@@ -1,5 +1,7 @@
 package com.diachenko.gallery.data;
 
+import android.text.TextUtils;
+
 import java.util.Objects;
 
 public class Photo {
@@ -57,14 +59,14 @@ public class Photo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Photo photo = (Photo) o;
-        return Objects.equals(folderName, photo.folderName) &&
+        return isLoading == photo.isLoading &&
+                isFail == photo.isFail &&
                 Objects.equals(path, photo.path);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(folderName, path);
+        return Objects.hash(path, isLoading, isFail);
     }
-
 }

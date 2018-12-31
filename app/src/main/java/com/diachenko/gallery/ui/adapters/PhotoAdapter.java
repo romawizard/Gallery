@@ -20,8 +20,8 @@ import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder> {
 
-    public static final String TAG = PhotoAdapter.class.getSimpleName();
-    public PhotoAdapterListener listener;
+    private static final String TAG = PhotoAdapter.class.getSimpleName();
+    private PhotoAdapterListener listener;
     private List<Photo> photos;
 
     @NonNull
@@ -29,8 +29,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
     public PhotoHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = (LayoutInflater) viewGroup.getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.photo_layout,viewGroup,false);
-
+        View view = inflater.inflate(R.layout.photo_item,viewGroup,false);
         return new PhotoHolder(view);
     }
 
@@ -46,31 +45,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
 
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
-        MyLog.log(TAG,"new List of photo. size = " + photos.size());
         notifyDataSetChanged();
+        MyLog.log(TAG,"new List of photo. size = " + photos.size());
     }
 
     public void setListener(PhotoAdapterListener listener) {
         this.listener = listener;
     }
 
-    public void stopLoadingAnimation(int position) {
-        photos.get(position).setLoading(false);
-        notifyItemChanged(position);
-    }
-
-    public void startLoadingAnimation(int position) {
-        Photo p = photos.get(position);
-        p.setFail(false);
-        p.setLoading(true);
-        notifyItemChanged(position);
-    }
-
-    public void showFailLoading(int position) {
-        Photo p = photos.get(position);
-        p.setFail(true);
-        p.setLoading(false);
-        notifyItemChanged(position);
+    public List<Photo> getPhotos() {
+        return photos;
     }
 
     public interface PhotoAdapterListener{
@@ -82,7 +66,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
         private ImageView imageView;
         private ImageView loadingImage;
         private ImageView errorImage;
-        private Photo photo;
         private int position;
 
         public PhotoHolder(@NonNull View itemView) {
@@ -94,11 +77,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
         }
 
         public void bind(Photo photo, int position) {
-            this.photo = photo;
             this.position = position;
             showPhoto(photo);
             showLoadingStatus(photo);
-
         }
 
         private void showLoadingStatus(Photo photo) {
@@ -109,6 +90,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
                 loadingImage.startAnimation(rotation);
             }
             else{
+                loadingImage.clearAnimation();
                 loadingImage.setVisibility(View.GONE);
             }
 
@@ -122,7 +104,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
         private void showPhoto(Photo photo) {
             Picasso.get()
                     .load(new File(photo.getPath()))
-                    .resize(500,500)
+                    .fit()
                     .centerCrop()
                     .placeholder(R.drawable.placeholder)
                     .into(imageView);
@@ -130,8 +112,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
 
         @Override
         public void onClick(View v) {
-            if (listener != null && !photo.isLoading()){
-                listener.onClick(photo,position);
+            if (listener != null && !photos.get(position).isLoading()){
+                listener.onClick(photos.get(position) ,position);
             }
         }
     }
