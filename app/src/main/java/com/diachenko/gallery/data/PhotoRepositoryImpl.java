@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.diachenko.gallery.data.api.ImgurApi;
 import com.diachenko.gallery.data.api.response.UploadPhotoResponse;
+import com.diachenko.gallery.data.database.UsersPhoto;
 import com.diachenko.gallery.data.database.dao.UrlDao;
 import com.diachenko.gallery.data.database.enteties.UrlPhoto;
 import com.diachenko.gallery.utils.Constants;
@@ -25,16 +26,16 @@ public class PhotoRepositoryImpl implements PhotoRepository {
 
     private static final String TAG = PhotoRepositoryImpl.class.getSimpleName();
 
-    private ExternalUsersPhoto externalUsersPhoto;
+    private UsersPhoto UsersPhoto;
     private ImgurApi imgurApi;
     private Executor executor;
     private UrlDao urlDao;
     private MutableLiveData<List<Photo>> liveData = new MutableLiveData<>();
     private List<Photo> photos = new ArrayList<>();
 
-    public PhotoRepositoryImpl(ExternalUsersPhoto externalUsersPhoto, ImgurApi imgurApi,
-                               Executor executor, UrlDao urlDao) {
-        this.externalUsersPhoto = externalUsersPhoto;
+    public PhotoRepositoryImpl(UsersPhoto UsersPhoto, ImgurApi imgurApi, Executor executor,
+                               UrlDao urlDao) {
+        this.UsersPhoto = UsersPhoto;
         this.imgurApi = imgurApi;
         this.executor = executor;
         this.urlDao = urlDao;
@@ -45,7 +46,7 @@ public class PhotoRepositoryImpl implements PhotoRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                List<Photo> tempPhotos = externalUsersPhoto.loadPhoto(context);
+                List<Photo> tempPhotos = UsersPhoto.loadPhoto(context);
                 calculateDifference(tempPhotos);
                 liveData.postValue(photos);
             }

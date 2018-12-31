@@ -3,7 +3,7 @@ package com.diachenko.gallery.utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TimeHalper {
+public class TimeHelper {
 
     private static final String JANUARY = "янв";
     private static final String FEBRUARY = "фев";
@@ -32,13 +32,12 @@ public class TimeHalper {
         String thisTime = timeFormat.format(date);
         String[] formattedDate = sdf.format(date).split("-");
         int simpleDaySeen = Integer.parseInt(formattedDate[0]);
-        long fullThisTime = time;
 
         String month = getMonth(Integer.valueOf(formattedDate[1]));
-        if ((simpleDayNow - simpleDaySeen == 0 && ((timeNow - fullThisTime) < 86400000) )) {
+        if ((simpleDayNow - simpleDaySeen == 0 && ((timeNow - time) < 86400000) )) {
             lastSeen = thisTime;
         } else {
-            if ((simpleDayNow - simpleDaySeen) == 1 && ((timeNow - fullThisTime) < 172800000)) {
+            if ((simpleDayNow - simpleDaySeen) == 1 && ((timeNow - simpleDayNow) < 172800000)) {
                 lastSeen = "вчера";
             } else {
                 lastSeen = formattedDate[0] + " " + month;
@@ -48,11 +47,6 @@ public class TimeHalper {
             }
         }
         return  lastSeen;
-    }
-
-    public static String getFormat(long time){
-        long shortTime = time/1000;
-        return String.format("%02d:%02d", shortTime / 60 , shortTime % 60);
     }
 
     private static String getMonth(int month) {

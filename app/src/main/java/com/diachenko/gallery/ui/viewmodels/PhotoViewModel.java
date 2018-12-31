@@ -25,13 +25,11 @@ public class PhotoViewModel extends ViewModel {
        return repository.getPhoto(context);
     }
 
-    public void uploadPhoto(Photo photo, int position) {
-        repository.uploadPhoto(photo,position);
-    }
-
     public LiveData<List<UrlPhoto>> getUrls(){
         return repository.getAllUploadedUrl();
     }
 
-
+    public void uploadPhoto(Photo photo, int position) {
+        repository.uploadPhoto(photo,position);
+    }
 }

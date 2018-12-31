@@ -6,10 +6,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.diachenko.gallery.data.database.UsersPhoto;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExternalUsersPhoto {
+public class ExternalUsersPhoto implements UsersPhoto {
 
     public static final String TAG = ExternalUsersPhoto.class.getSimpleName();
 
@@ -25,6 +27,7 @@ public class ExternalUsersPhoto {
             MediaStore.Images.Media.DISPLAY_NAME
     };
 
+    @Override
     public List<Photo> loadPhoto(Context context) {
         List<Photo> listOfAllImages = new ArrayList<Photo>();
 

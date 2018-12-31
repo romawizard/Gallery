@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.diachenko.gallery.R;
 import com.diachenko.gallery.data.database.enteties.UrlPhoto;
-import com.diachenko.gallery.utils.TimeHalper;
+import com.diachenko.gallery.utils.TimeHelper;
 
 import java.util.List;
 
@@ -56,7 +56,7 @@ public class ListUrlAdapter extends RecyclerView.Adapter<ListUrlAdapter.UrlHolde
         public void bind(UrlPhoto urlPhoto, int position) {
             number.setText(String.valueOf(position));
             url.setText(urlPhoto.getUrl());
-            time.setText(TimeHalper.getTime(urlPhoto.getTimestamp()));
+            time.setText(TimeHelper.getTime(urlPhoto.getTimestamp()));
         }
 
         @Override
