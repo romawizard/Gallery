@@ -42,7 +42,7 @@ public class ListUrlAdapter extends RecyclerView.Adapter<ListUrlAdapter.UrlHolde
         notifyDataSetChanged();
     }
 
-    public class UrlHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class UrlHolder extends RecyclerView.ViewHolder{
 
         private TextView number, url, time;
 
@@ -57,11 +57,6 @@ public class ListUrlAdapter extends RecyclerView.Adapter<ListUrlAdapter.UrlHolde
             number.setText(String.valueOf(position));
             url.setText(urlPhoto.getUrl());
             time.setText(TimeHelper.getTime(urlPhoto.getTimestamp()));
-        }
-
-        @Override
-        public void onClick(View v) {
-
         }
     }
 }

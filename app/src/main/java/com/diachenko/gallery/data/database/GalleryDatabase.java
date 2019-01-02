@@ -10,5 +10,4 @@ import com.diachenko.gallery.data.database.enteties.UrlPhoto;
 public abstract class GalleryDatabase extends RoomDatabase {
 
     public abstract UrlDao getUrlDao();
-
 }

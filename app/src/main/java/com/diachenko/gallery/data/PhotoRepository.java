@@ -15,5 +15,4 @@ public interface PhotoRepository {
     LiveData<List<UrlPhoto>> getAllUploadedUrl();
 
     void uploadPhoto(Photo photo, int position);
-
 }

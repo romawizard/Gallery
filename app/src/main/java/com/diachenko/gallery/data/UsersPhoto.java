@@ -1,4 +1,4 @@
-package com.diachenko.gallery.data.database;
+package com.diachenko.gallery.data;
 
 import android.content.Context;
 
@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface UsersPhoto {
 
-    public List<Photo> loadPhoto(Context context);
+     List<Photo> loadPhoto(Context context);
 }

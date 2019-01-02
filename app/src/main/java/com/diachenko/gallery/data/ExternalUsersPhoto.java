@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import com.diachenko.gallery.data.database.UsersPhoto;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,17 +18,13 @@ public class ExternalUsersPhoto implements UsersPhoto {
 
     // which image properties are we querying
     private String[] projection = new String[]{
-            MediaStore.Images.Media._ID,
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-            MediaStore.Images.Media.DATE_TAKEN,
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.DISPLAY_NAME
     };
 
     @Override
     public List<Photo> loadPhoto(Context context) {
-        List<Photo> listOfAllImages = new ArrayList<Photo>();
-
         int columnIndexData, columnIndexFolderName, columnIndexFileName;
         String absolutePathOfImage;
         String folderName;
@@ -39,6 +33,10 @@ public class ExternalUsersPhoto implements UsersPhoto {
 
         Cursor cursor = context.getContentResolver().query(images, projection, null,
                 null, null);
+
+        int count = cursor == null ? 0 : cursor.getCount();
+
+        List<Photo> listOfAllImages = new ArrayList<Photo>(count);
 
         columnIndexData = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         columnIndexFolderName = cursor.
@@ -55,5 +53,4 @@ public class ExternalUsersPhoto implements UsersPhoto {
         cursor.close();
         return listOfAllImages;
     }
-
 }

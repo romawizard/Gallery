@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
     @Override
     public void onClick(final Photo photo, final int position) {
         photoViewModel.uploadPhoto(photo, position);
-
     }
 
     @Override
@@ -111,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
         photoViewModel.getPhotos(this).observe(this, new Observer<List<Photo>>() {
             @Override
             public void onChanged(@Nullable List<Photo> photos) {
-                stopLoading();
+                stopLoadingAnimation();
                 adapter.setPhotos(photos);
 
 //                DiffUtilPhoto diffUtilPhoto = new DiffUtilPhoto(adapter.getPhotos(),photos);
@@ -123,13 +122,13 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
 
     }
 
-    private void stopLoading() {
+    private void stopLoadingAnimation() {
         loadingPhotos.clearAnimation();
         loadingPhotos.setVisibility(View.GONE);
     }
 
     private void showPhotos() {
-        showLoading();
+        startLoadingAnimation();
         // get and init ViewModel
         PhotoRepository repository = GalleryApplication.getInstance().getRepository();
         photoViewModel = ViewModelProviders.of(this, new PhotoViewModelFactory(repository))
@@ -144,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
         }
     }
 
-    private void showLoading() {
+    private void startLoadingAnimation() {
         loadingPhotos.setVisibility(View.VISIBLE);
         loadingPhotos.setVisibility(View.VISIBLE);
         Animation rotation = AnimationUtils.loadAnimation(this,

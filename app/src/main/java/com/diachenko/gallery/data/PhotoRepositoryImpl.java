@@ -6,7 +6,6 @@ import android.content.Context;
 
 import com.diachenko.gallery.data.api.ImgurApi;
 import com.diachenko.gallery.data.api.response.UploadPhotoResponse;
-import com.diachenko.gallery.data.database.UsersPhoto;
 import com.diachenko.gallery.data.database.dao.UrlDao;
 import com.diachenko.gallery.data.database.enteties.UrlPhoto;
 import com.diachenko.gallery.utils.Constants;
@@ -101,7 +100,6 @@ public class PhotoRepositoryImpl implements PhotoRepository {
                 } catch (IOException e) {
                     e.printStackTrace();
                     MyLog.log(TAG,"fail to load photo response " + e.getMessage());
-
                     p.setLoading(false);
                     p.setFail(true);
                     liveData.postValue(photos);
