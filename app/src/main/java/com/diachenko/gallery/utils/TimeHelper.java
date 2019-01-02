@@ -5,21 +5,21 @@ import java.util.Date;
 
 public class TimeHelper {
 
-    private static final String JANUARY = "янв";
-    private static final String FEBRUARY = "фев";
-    private static final String MARCH = "мар";
-    private static final String APRIL = "апр";
-    private static final String MAY = "мая";
-    private static final String JUNE = "июн";
-    private static final String JULY = "июл";
-    private static final String AUGUST = "авг";
-    private static final String SEPTEMBER = "сен";
-    private static final String OCTOBER = "окт";
-    private static final String NOVEMBER = "ноя";
-    private static final String DECEMBER = "дек";
+    private static final String JANUARY = "jan";
+    private static final String FEBRUARY = "feb";
+    private static final String MARCH = "mar";
+    private static final String APRIL = "apr";
+    private static final String MAY = "may";
+    private static final String JUNE = "jun";
+    private static final String JULY = "jul";
+    private static final String AUGUST = "aug";
+    private static final String SEPTEMBER = "sep";
+    private static final String OCTOBER = "oct";
+    private static final String NOVEMBER = "nov";
+    private static final String DECEMBER = "dec";
 
     public static String getTime(long time){
-        String lastSeen = "";
+        String lastSeen;
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -38,7 +38,7 @@ public class TimeHelper {
             lastSeen = thisTime;
         } else {
             if ((simpleDayNow - simpleDaySeen) == 1 && ((timeNow - simpleDayNow) < 172800000)) {
-                lastSeen = "вчера";
+                lastSeen = "yesterday";
             } else {
                 lastSeen = formattedDate[0] + " " + month;
                 if (Integer.parseInt(todayTime[2]) != Integer.parseInt(formattedDate[2])){
