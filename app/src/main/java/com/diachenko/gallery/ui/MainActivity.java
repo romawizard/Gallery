@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
     private PhotoAdapter adapter;
 
     @Override
-    public void onClick(final Photo photo, final int position) {
+    public void onPhotoClicked(final Photo photo, final int position) {
         photoViewModel.uploadPhoto(photo, position);
     }
 
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     showPhotos();
                 } else {
-                    Toast.makeText(this, "Unfortunately you don't allow to save image"
+                    Toast.makeText(this, getString(R.string.warning_message)
                             , Toast.LENGTH_LONG).show();
                 }
                 return;
@@ -112,14 +112,8 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
             public void onChanged(@Nullable List<Photo> photos) {
                 stopLoadingAnimation();
                 adapter.setPhotos(photos);
-
-//                DiffUtilPhoto diffUtilPhoto = new DiffUtilPhoto(adapter.getPhotos(),photos);
-//                DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffUtilPhoto);
-//                adapter.setPhotos(photos);
-//                result.dispatchUpdatesTo(adapter);
             }
         });
-
     }
 
     private void stopLoadingAnimation() {
@@ -155,14 +149,9 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this
-                    , Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}
-                        , REQUEST_PERMISSION_CODE);
-            }
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}
+                    , REQUEST_PERMISSION_CODE);
         } else {
             showPhotos();
         }

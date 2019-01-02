@@ -3,14 +3,13 @@ package com.diachenko.gallery;
 import android.app.Application;
 import android.arch.persistence.room.Room;
 
-import com.diachenko.gallery.data.ExternalUsersPhoto;
+import com.diachenko.gallery.data.ExternalPhotosDataSource;
 import com.diachenko.gallery.data.PhotoRepository;
 import com.diachenko.gallery.data.PhotoRepositoryImpl;
 import com.diachenko.gallery.data.api.ImgurApi;
 import com.diachenko.gallery.data.database.GalleryDatabase;
 import com.github.leonardoxh.livedatacalladapter.LiveDataCallAdapterFactory;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import retrofit2.Retrofit;
@@ -33,7 +32,7 @@ public class GalleryApplication extends Application {
     }
 
     private void initRepository() {
-        repository = new PhotoRepositoryImpl(new ExternalUsersPhoto(),imgurApi,
+        repository = new PhotoRepositoryImpl(new ExternalPhotosDataSource(),imgurApi,
                 Executors.newSingleThreadExecutor(),database.getUrlDao());
     }
 

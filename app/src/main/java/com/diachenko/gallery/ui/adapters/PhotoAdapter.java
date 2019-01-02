@@ -52,13 +52,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
     public void setListener(PhotoAdapterListener listener) {
         this.listener = listener;
     }
-
-    public List<Photo> getPhotos() {
-        return photos;
-    }
+    
 
     public interface PhotoAdapterListener{
-        void onClick(Photo photo, int position);
+        void onPhotoClicked(Photo photo, int position);
      }
 
     public class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -113,7 +110,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
         @Override
         public void onClick(View v) {
             if (listener != null && !photos.get(position).isLoading()){
-                listener.onClick(photos.get(position) ,position);
+                listener.onPhotoClicked(photos.get(position) ,position);
             }
         }
     }

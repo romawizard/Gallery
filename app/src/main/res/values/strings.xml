@@ -6,4 +6,5 @@
     <string name="uploaded_image">Uploaded image</string>
     <string name="item_number">№</string>
     <string name="time">Time</string>
+    <string name="warning_message">Unfortunately you don\'t allow to show images</string>
 </resources>

@@ -17,6 +17,8 @@ public class TimeHelper {
     private static final String OCTOBER = "oct";
     private static final String NOVEMBER = "nov";
     private static final String DECEMBER = "dec";
+    private static final long ONE_DAY = 86400000;
+    private static final long TWO_DAYS = 172800000;
 
     public static String getTime(long time){
         String lastSeen;
@@ -25,19 +27,19 @@ public class TimeHelper {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
         Long timeNow = (new Date().getTime()) ;
-        String [] todayTime = sdf.format(timeNow).split("-");
+        String []todayTime = sdf.format(timeNow).split("-");
         int simpleDayNow = Integer.parseInt(todayTime[0]);
 
         Date date = new Date(time );
         String thisTime = timeFormat.format(date);
-        String[] formattedDate = sdf.format(date).split("-");
+        String []formattedDate = sdf.format(date).split("-");
         int simpleDaySeen = Integer.parseInt(formattedDate[0]);
 
         String month = getMonth(Integer.valueOf(formattedDate[1]));
-        if ((simpleDayNow - simpleDaySeen == 0 && ((timeNow - time) < 86400000) )) {
+        if ((simpleDayNow - simpleDaySeen == 0 && ((timeNow - time) < ONE_DAY) )) {
             lastSeen = thisTime;
         } else {
-            if ((simpleDayNow - simpleDaySeen) == 1 && ((timeNow - simpleDayNow) < 172800000)) {
+            if ((simpleDayNow - simpleDaySeen) == 1 && ((timeNow - simpleDayNow) < TWO_DAYS)) {
                 lastSeen = "yesterday";
             } else {
                 lastSeen = formattedDate[0] + " " + month;
@@ -50,48 +52,48 @@ public class TimeHelper {
     }
 
     private static String getMonth(int month) {
-        String mounth = "";
+        String m = "";
         switch (month) {
             case 01:
-                mounth = JANUARY;
+                m = JANUARY;
                 break;
             case 02:
-                mounth = FEBRUARY;
+                m = FEBRUARY;
                 break;
             case 03:
-                mounth = MARCH;
+                m = MARCH;
                 break;
             case 04:
-                mounth = APRIL;
+                m = APRIL;
                 break;
             case 05:
-                mounth = MAY;
+                m = MAY;
                 break;
             case 06:
-                mounth = JUNE;
+                m = JUNE;
                 break;
             case 07:
-                mounth = JULY;
+                m = JULY;
                 break;
             case 8:
-                mounth = AUGUST;
+                m = AUGUST;
                 break;
             case 9:
-                mounth = SEPTEMBER;
+                m = SEPTEMBER;
                 break;
             case 10:
-                mounth = OCTOBER;
+                m = OCTOBER;
                 break;
             case 11:
-                mounth = NOVEMBER;
+                m = NOVEMBER;
                 break;
             case 12:
-                mounth = DECEMBER;
+                m = DECEMBER;
                 break;
             default:
-                mounth = "месяц";
+                m = "месяц";
                 break;
         }
-        return mounth;
+        return m;
     }
 }

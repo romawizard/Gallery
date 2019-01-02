@@ -25,16 +25,16 @@ public class PhotoRepositoryImpl implements PhotoRepository {
 
     private static final String TAG = PhotoRepositoryImpl.class.getSimpleName();
 
-    private UsersPhoto UsersPhoto;
+    private PhotosDataSource PhotosDataSource;
     private ImgurApi imgurApi;
     private Executor executor;
     private UrlDao urlDao;
     private MutableLiveData<List<Photo>> liveData = new MutableLiveData<>();
     private List<Photo> photos = new ArrayList<>();
 
-    public PhotoRepositoryImpl(UsersPhoto UsersPhoto, ImgurApi imgurApi, Executor executor,
+    public PhotoRepositoryImpl(PhotosDataSource PhotosDataSource, ImgurApi imgurApi, Executor executor,
                                UrlDao urlDao) {
-        this.UsersPhoto = UsersPhoto;
+        this.PhotosDataSource = PhotosDataSource;
         this.imgurApi = imgurApi;
         this.executor = executor;
         this.urlDao = urlDao;
@@ -45,7 +45,7 @@ public class PhotoRepositoryImpl implements PhotoRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                List<Photo> tempPhotos = UsersPhoto.loadPhoto(context);
+                List<Photo> tempPhotos = PhotosDataSource.loadPhoto(context);
                 calculateDifference(tempPhotos);
                 liveData.postValue(photos);
             }

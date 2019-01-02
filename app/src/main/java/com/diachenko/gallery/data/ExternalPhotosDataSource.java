@@ -9,9 +9,9 @@ import android.provider.MediaStore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExternalUsersPhoto implements UsersPhoto {
+public class ExternalPhotosDataSource implements PhotosDataSource {
 
-    public static final String TAG = ExternalUsersPhoto.class.getSimpleName();
+    public static final String TAG = ExternalPhotosDataSource.class.getSimpleName();
 
     // content:// style URI for the "primary" external storage volume
     private Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;

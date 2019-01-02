@@ -6,7 +6,7 @@ import com.diachenko.gallery.data.Photo;
 
 import java.util.List;
 
-public interface UsersPhoto {
+public interface PhotosDataSource {
 
      List<Photo> loadPhoto(Context context);
 }
