@@ -1,4 +1,4 @@
-package com.diachenko.gallery.data.database.enteties;
+package com.diachenko.gallery.data.database.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

@@ -5,7 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
-import com.diachenko.gallery.data.database.enteties.UrlPhoto;
+import com.diachenko.gallery.data.database.entities.UrlPhoto;
 
 import java.util.List;
 

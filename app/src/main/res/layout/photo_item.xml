@@ -1,39 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <data>
+
+        <import type="android.view.View" />
+        <import type="com.diachenko.gallery.R"/>
+
+
+        <variable
+            name="photo"
+            type="com.diachenko.gallery.data.Photo" />
+        <variable
+            name="click_handler"
+            type="com.diachenko.gallery.ui.adapters.OnPhotoClickListener"/>
+    </data>
 
     <com.diachenko.gallery.views.SquareFrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:onClick="@{(view) -> click_handler.onPhotoClicked(photo)}">
 
         <ImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:padding="1dp"
-            android:layout_gravity="center"/>
+            app:path="@{photo.getPath()}"
+            app:placeholder="@{@drawable/placeholder}" />
 
         <ImageView
             android:id="@+id/loading_image"
             android:layout_width="@dimen/loading_width"
             android:layout_height="@dimen/loading_height"
-            android:src="@drawable/loading"
-            android:visibility="gone"
             android:layout_gravity="center"
-            />
+            android:src="@drawable/loading"
+            app:animated="@{photo.isLoading()}"
+            android:visibility="@{photo.isLoading() ? View.VISIBLE : View.GONE}" />
 
 
         <ImageView
             android:id="@+id/error_image"
             android:layout_width="@dimen/loading_width"
             android:layout_height="@dimen/loading_height"
-            android:src="@drawable/error"
-            android:visibility="gone"
             android:layout_gravity="center"
-         />
+            android:src="@drawable/error"
+            android:visibility="@{photo.isFail() ? View.VISIBLE : View.GONE}" />
 
     </com.diachenko.gallery.views.SquareFrameLayout>
 
-</android.support.constraint.ConstraintLayout>
+</layout>

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,28 +15,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.diachenko.gallery.R;
-import com.diachenko.gallery.data.database.enteties.UrlPhoto;
+import com.diachenko.gallery.data.database.entities.UrlPhoto;
 import com.diachenko.gallery.ui.adapters.ListUrlAdapter;
 import com.diachenko.gallery.ui.viewmodels.PhotoViewModel;
+import com.diachenko.gallery.utils.Mapper;
 
 import java.util.List;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 public class ListUrlDialog extends DialogFragment {
 
     private PhotoViewModel model;
     private RecyclerView listView;
-    private ListUrlAdapter adapter;
+    ListUrlAdapter adapter;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         model = ViewModelProviders.of(getActivity()).get(PhotoViewModel.class);
-        model.getUrls().observe(this, new Observer<List<UrlPhoto>>() {
-            @Override
-            public void onChanged(@Nullable List<UrlPhoto> urlPhotos) {
-                adapter.setUrls(urlPhotos);
-            }
-        });
+        model.getUrls().observe(this,(urlPhotoUIS) -> adapter.setUrls(urlPhotoUIS));
     }
 
     @NonNull
@@ -56,8 +57,7 @@ public class ListUrlDialog extends DialogFragment {
     private void initListView() {
         LinearLayoutManager lm = new LinearLayoutManager(getActivity());
         lm.setOrientation(LinearLayoutManager.VERTICAL);
-
-        adapter = new ListUrlAdapter();
+        adapter =  new ListUrlAdapter();
         listView.setAdapter(adapter);
         listView.setLayoutManager(lm);
     }

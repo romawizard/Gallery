@@ -2,13 +2,12 @@ package com.diachenko.gallery.ui;
 
 
 import android.Manifest;
-import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,19 +22,17 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.diachenko.gallery.GalleryApplication;
 import com.diachenko.gallery.R;
 import com.diachenko.gallery.data.Photo;
-import com.diachenko.gallery.data.PhotoRepository;
 import com.diachenko.gallery.ui.adapters.PhotoAdapter;
 import com.diachenko.gallery.ui.dialogs.ListUrlDialog;
 import com.diachenko.gallery.ui.viewmodels.PhotoViewModel;
-import com.diachenko.gallery.ui.viewmodels.PhotoViewModelFactory;
 
-import java.util.List;
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity implements PhotoAdapter.PhotoAdapterListener {
 
@@ -50,12 +47,15 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
     RecyclerView photoGrid;
     @BindView(R.id.loading_photos)
     ImageView loadingPhotos;
-    private PhotoViewModel photoViewModel;
-    private PhotoAdapter adapter;
+    @Inject
+    ViewModelProvider.Factory viewModelProvider;
+    @Inject
+    PhotoAdapter adapter;
+    private PhotoViewModel viewModel;
 
     @Override
-    public void onPhotoClicked(final Photo photo, final int position) {
-        photoViewModel.uploadPhoto(photo, position);
+    public void onPhotoClicked(final Photo photo) {
+        viewModel.uploadPhoto(photo);
     }
 
     @Override
@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
                     Toast.makeText(this, getString(R.string.warning_message)
                             , Toast.LENGTH_LONG).show();
                 }
-                return;
         }
     }
 
@@ -92,9 +91,14 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        viewModel = ViewModelProviders.of(this, viewModelProvider)
+                .get(PhotoViewModel.class);
+
         setSupportActionBar(toolbar);
         getPermission();
     }
@@ -103,16 +107,12 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
         GridLayoutManager layoutManager = new GridLayoutManager(this, spanCount);
         layoutManager.setOrientation(GridLayoutManager.VERTICAL);
 
-        adapter = new PhotoAdapter();
         adapter.setListener(this);
         photoGrid.setLayoutManager(layoutManager);
         photoGrid.setAdapter(adapter);
-        photoViewModel.getPhotos(this).observe(this, new Observer<List<Photo>>() {
-            @Override
-            public void onChanged(@Nullable List<Photo> photos) {
-                stopLoadingAnimation();
-                adapter.setPhotos(photos);
-            }
+        viewModel.getPhotos().observe(this, (photos) -> {
+            stopLoadingAnimation();
+            adapter.setPhotos(photos);
         });
     }
 
@@ -122,13 +122,6 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
     }
 
     private void showPhotos() {
-        startLoadingAnimation();
-        // get and init ViewModel
-        PhotoRepository repository = GalleryApplication.getInstance().getRepository();
-        photoViewModel = ViewModelProviders.of(this, new PhotoViewModelFactory(repository))
-                .get(PhotoViewModel.class);
-
-        // Check Orientation
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             preparePhotoGrid(LANDSCAPE_SPAN_COUNT);
@@ -138,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
     }
 
     private void startLoadingAnimation() {
-        loadingPhotos.setVisibility(View.VISIBLE);
         loadingPhotos.setVisibility(View.VISIBLE);
         Animation rotation = AnimationUtils.loadAnimation(this,
                 R.anim.progress_animation);
@@ -153,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}
                     , REQUEST_PERMISSION_CODE);
         } else {
+            startLoadingAnimation();
             showPhotos();
         }
     }

@@ -1,69 +1,36 @@
 package com.diachenko.gallery;
 
+import android.app.Activity;
 import android.app.Application;
-import android.arch.persistence.room.Room;
 
-import com.diachenko.gallery.data.ExternalPhotosDataSource;
-import com.diachenko.gallery.data.PhotoRepository;
-import com.diachenko.gallery.data.PhotoRepositoryImpl;
-import com.diachenko.gallery.data.api.ImgurApi;
-import com.diachenko.gallery.data.database.GalleryDatabase;
-import com.github.leonardoxh.livedatacalladapter.LiveDataCallAdapterFactory;
+import com.diachenko.gallery.di.components.DaggerApplicationComponent;
 
-import java.util.concurrent.Executors;
+import javax.inject.Inject;
 
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
 
-public class GalleryApplication extends Application {
+public class GalleryApplication extends Application implements HasActivityInjector {
 
-    private static GalleryApplication instance;
-    private ImgurApi imgurApi;
-    private GalleryDatabase database;
-    private PhotoRepository repository;
+    @Inject
+    DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
-        initRetrofit();
-        initRoom();
-        initRepository();
+        initDagger();
     }
 
-    private void initRepository() {
-        repository = new PhotoRepositoryImpl(new ExternalPhotosDataSource(),imgurApi,
-                Executors.newSingleThreadExecutor(),database.getUrlDao());
+    @Override
+    public AndroidInjector<Activity> activityInjector() {
+        return dispatchingActivityInjector;
     }
 
-    public static GalleryApplication getInstance() {
-        return instance;
-    }
-
-    public ImgurApi getImgurApi() {
-        return imgurApi;
-    }
-
-    public GalleryDatabase getDatabase() {
-        return database;
-    }
-
-    public PhotoRepository getRepository() {
-        return repository;
-    }
-
-    private void initRoom() {
-        database = Room.databaseBuilder(this,GalleryDatabase.class,
-                getString(R.string.database)).build();
-    }
-
-    private void initRetrofit() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.base_url))
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
-                .build();
-
-        imgurApi = retrofit.create(ImgurApi.class);
+    private void initDagger() {
+        DaggerApplicationComponent.builder()
+                .application(this)
+                .build()
+                .inject(this);
     }
 }

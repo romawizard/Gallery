@@ -22,9 +22,14 @@ public class ExternalPhotosDataSource implements PhotosDataSource {
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.DISPLAY_NAME
     };
+    private Context context;
+
+    public ExternalPhotosDataSource(Context context) {
+        this.context = context;
+    }
 
     @Override
-    public List<Photo> loadPhoto(Context context) {
+    public List<Photo> loadPhoto() {
         int columnIndexData, columnIndexFolderName, columnIndexFileName;
         String absolutePathOfImage;
         String folderName;

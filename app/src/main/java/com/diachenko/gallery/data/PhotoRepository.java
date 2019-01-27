@@ -1,18 +1,15 @@
 package com.diachenko.gallery.data;
 
-import android.arch.lifecycle.LiveData;
-import android.content.Context;
+import com.diachenko.gallery.data.api.response.UploadPhotoResponse;
 
-import com.diachenko.gallery.data.database.enteties.UrlPhoto;
-
-
+import java.io.IOException;
 import java.util.List;
+
+import retrofit2.Response;
 
 public interface PhotoRepository {
 
-    LiveData<List<Photo>> getPhoto(Context context);
+    List<Photo> getPhoto();
 
-    LiveData<List<UrlPhoto>> getAllUploadedUrl();
-
-    void uploadPhoto(Photo photo, int position);
+    Response<UploadPhotoResponse> uploadPhoto(Photo photo) throws IOException;
 }
