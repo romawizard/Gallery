@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.Phot
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_PERMISSION_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     showPhotos();
                 } else {
                     Toast.makeText(this, getString(R.string.warning_message)

@@ -1,7 +1,6 @@
 package com.diachenko.gallery.di.modules;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.diachenko.gallery.GalleryApplication;
 

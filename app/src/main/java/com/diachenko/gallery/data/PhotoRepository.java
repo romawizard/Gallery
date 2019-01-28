@@ -9,7 +9,7 @@ import retrofit2.Response;
 
 public interface PhotoRepository {
 
-    List<Photo> getPhoto();
+    List<Photo> getPhotos();
 
     Response<UploadPhotoResponse> uploadPhoto(Photo photo) throws IOException;
 }

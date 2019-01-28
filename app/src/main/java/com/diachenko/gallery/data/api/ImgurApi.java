@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 public interface ImgurApi {
 
     @Multipart
-    @POST("/3/image")
+    @POST(Request.UPLOAD_PHOTO_PATH)
     Call<UploadPhotoResponse> uploadPhoto(@Header("Authorization") String auth,
                                           @Query("title") String title,
                                           @Part("image") RequestBody file);

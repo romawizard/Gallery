@@ -64,12 +64,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoHolder>
 
         private PhotoItemBinding binding;
 
-        public PhotoHolder(@NonNull PhotoItemBinding binding) {
+        PhotoHolder(@NonNull PhotoItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
-        public void bind(Photo photo) {
+         void bind(Photo photo) {
             binding.setPhoto(photo);
             binding.setClickHandler(this);
             binding.executePendingBindings();

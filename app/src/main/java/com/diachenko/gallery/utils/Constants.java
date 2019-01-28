@@ -2,6 +2,9 @@ package com.diachenko.gallery.utils;
 
 public class Constants {
 
+    private Constants() {
+    }
+
     public static final String SASE_URL = "https://api.imgur.com";
 
     public static final String DATA_BASE_NAME = "GalleryDatabase";

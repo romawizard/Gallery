@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ExternalPhotosDataSource implements PhotosDataSource {
 
@@ -41,9 +42,9 @@ public class ExternalPhotosDataSource implements PhotosDataSource {
 
         int count = cursor == null ? 0 : cursor.getCount();
 
-        List<Photo> listOfAllImages = new ArrayList<Photo>(count);
+        List<Photo> listOfAllImages = new ArrayList<>(count);
 
-        columnIndexData = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        columnIndexData = Objects.requireNonNull(cursor).getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         columnIndexFolderName = cursor.
                 getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
         columnIndexFileName = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);

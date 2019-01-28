@@ -37,7 +37,7 @@ public class PhotoViewModel extends ViewModel {
 
     public LiveData<List<Photo>> getPhotos() {
         executor.execute(() -> {
-            List<Photo> photoList = repository.getPhoto();
+            List<Photo> photoList = repository.getPhotos();
             calculateDifference(photoList);
             photosLiveData.postValue(photosCache);
         });

@@ -48,12 +48,12 @@ public class ListUrlAdapter extends RecyclerView.Adapter<ListUrlAdapter.UrlHolde
 
         private UrlItemBinding binding;
 
-        public UrlHolder(@NonNull UrlItemBinding binding) {
+         UrlHolder(@NonNull UrlItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
-        public void bind(UrlPhotoUI urlPhoto) {
+        void bind(UrlPhotoUI urlPhoto) {
             binding.setUrlPhoto(urlPhoto);
             binding.executePendingBindings();
         }

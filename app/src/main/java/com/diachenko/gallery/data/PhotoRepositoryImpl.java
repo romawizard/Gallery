@@ -2,8 +2,6 @@ package com.diachenko.gallery.data;
 
 import com.diachenko.gallery.data.api.ImgurApi;
 import com.diachenko.gallery.data.api.response.UploadPhotoResponse;
-import com.diachenko.gallery.data.database.dao.UrlDao;
-import com.diachenko.gallery.data.database.entities.UrlPhoto;
 import com.diachenko.gallery.utils.Constants;
 
 import java.io.File;
@@ -28,7 +26,7 @@ public class PhotoRepositoryImpl implements PhotoRepository {
     }
 
     @Override
-    public List<Photo> getPhoto() {
+    public List<Photo> getPhotos() {
         return photosDataSource.loadPhoto();
     }
 

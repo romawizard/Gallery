@@ -1,7 +1,5 @@
 package com.diachenko.gallery.data;
 
-import android.text.TextUtils;
-
 import java.util.Objects;
 
 public class Photo {

@@ -25,8 +25,8 @@ public class BindingAdapters {
     }
 
     @BindingAdapter("app:animated")
-    public static void startAnimation(View view, boolean shouldLoad) {
-        if (shouldLoad) {
+    public static void startAnimation(View view, boolean shouldAnimate) {
+        if (shouldAnimate) {
             Animation anim = AnimationUtils.loadAnimation(view.getContext(), R.anim.progress_animation);
             view.startAnimation(anim);
         } else {
