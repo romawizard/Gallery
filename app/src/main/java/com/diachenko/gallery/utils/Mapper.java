@@ -11,6 +11,8 @@ import java.util.Locale;
 
 public class Mapper {
 
+    private Mapper(){}
+
     public static List<UrlPhotoUI> mapUrlPhoto(List<UrlPhoto> photos) {
         List<UrlPhotoUI> result = new ArrayList<>();
         for (int i = 0, n = photos.size(); i < n ; i++) {
